@@ -32,7 +32,7 @@ queries = {
     # ______ Чтение из БД sakila ___________________________________________________________________
 
     # Поиск по КЛЮЧЕВОМУ СЛОВУ без ограничения вывода кол-ва найденных фильмов:
-    'query_film_by_key_word':
+    'query_film_by_keyword':
         "SELECT title, release_year, length "   #, description
         "FROM sakila.film "
         "WHERE title REGEXP %s ",     # '^{1}| {1}| {1}  --> так выведет только слова целиком.
@@ -72,15 +72,22 @@ queries = {
 
     # ______ ЗАПИСЬ в БД group_111124_fp_Dvornyk_Olha ___________________________________________________________________
 
-    # Запрос на ЗАПИСЬ запроса, его результатов и дат + Создание и Обновление СЧЁТЧИКА запросов:
+    # Запрос на ЗАПИСЬ типа запроса, его результатов и дат + Создание и Обновление СЧЁТЧИКА запросов:
     #   search_type -    %s or {0} - get_query_type('kw'),
-    #   search_content - %s or {1} - film_key_word,
+    #   search_content - %s or {1} - film_keyword,
     #   date_time -      %s or {2} - date_time
     'counter_query':
         "INSERT INTO search_queries (search_type, search_content, cnt_search, date_time) "
         "VALUES (%s, %s, 1, %s) "
-        "ON DUPLICATE KEY UPDATE cnt_search = cnt_search + 1, date_time = VALUES(date_time) "
+        "ON DUPLICATE KEY UPDATE cnt_search = cnt_search + 1, date_time = VALUES(date_time) ",
 
+    # ______ ЧТЕНИЕ из БД group_111124_fp_Dvornyk_Olha ___________________________________________________________________
+    # Печать 3-х самых популярных запросов из таблицы search_queries:
+    'popular_search_query':
+        "SELECT search_type, search_content "
+        "FROM group_111124_fp_Dvornyk_Olha.search_queries "
+        "ORDER BY cnt_search DESC " 
+        "LIMIT %s"
 }
 
 

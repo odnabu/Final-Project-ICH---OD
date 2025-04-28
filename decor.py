@@ -25,3 +25,4 @@ def print_one_field_as_table(chosen_table, column_title, data_in_col):
 column_title_film = ['N', 'Tile', 'Year', 'Duration']     # , 'DESCRIPTION'
 column_title_genre = ['N', 'Tile']
 column_title_year = ['from', 'to']
+column_title_popular = ['N', 'Type of search', 'Content of search']
