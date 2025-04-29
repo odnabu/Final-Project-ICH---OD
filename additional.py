@@ -16,10 +16,10 @@ def get_query_type(key):
 
 # ___ Ключевое слово для поисковых запросов в таблице film БД sakila:
 def ask_film_keyword():
-    print(f'\nTo find a film by keyword in a title')
+    print(f'\n \033[32m▹\033[m To find a film by keyword in a title')
     while True:
-        # keyword = input(f'ENTER the keyword for searching: ').lower()
-        keyword = 'oce'
+        keyword = input(f'   ENTER the keyword for searching: ').lower()
+        # keyword = 'oce'
         if keyword != '':
             return keyword
         else:

@@ -4,12 +4,14 @@ from prettytable import PrettyTable
 # +++++++++++++++++++++++++++++++++++
 
 # %%%%%%%%%______ Оформление таблицы в выводе результатов ______%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Таблица, из которой берутся данные --> chosen_table.
+# Текст в заголовке до search_type --> header_text
+# Тип поискового запроса --> search_type /// search_type.
+# Ключевое слово для поиска --> film_keyword
 # Имена столбцов --> column_title. NB! кол-во элементов в списке имен должно быть таким же сколько и в списке data_in_col.
 # Данные для вывода --> data_in_col.
-def print_one_field_as_table(chosen_table, column_title, data_in_col):
+def print_one_field_as_table(header_text, search_type, film_keyword, column_title, data_in_col):
     x = PrettyTable()
-    x.title = f'🔜 Films by: \033[35m\"{chosen_table}\" \033[m'       # 🔜🗄️»»⁜※▤⊟⋙⋙
+    x.title = f'🔜 {header_text} {search_type} \033[35m\"{film_keyword}\" \033[m'       # 🔜🗄️»»⁜※▤⊟⋙⋙
     x.header = True
     # x.header_style = 'title'
     x.align = 'l'
@@ -22,7 +24,14 @@ def print_one_field_as_table(chosen_table, column_title, data_in_col):
     print(x)
 
 # Имена столбцов в выводе таблице:
-column_title_film = ['N', 'Tile', 'Year', 'Duration']     # , 'DESCRIPTION'
-column_title_genre = ['N', 'Tile']
-column_title_year = ['from', 'to']
-column_title_popular = ['N', 'Type of search', 'Content of search']
+column_title = {
+    'column_title_film': ['N', 'Tile', 'Year', 'Duration'],     # , 'DESCRIPTION'
+    'column_title_genre': ['N', 'Tile'],
+    'column_title_year': ['from', 'to'],
+    'column_title_popular': ['N', 'Type of search', 'Content of search']
+}
+
+# Текст в заголовке до search_type --> header_text
+header_text = {
+    'header_text_film': 'Films by'
+}
