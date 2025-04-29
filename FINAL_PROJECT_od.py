@@ -11,10 +11,10 @@ from queries import queries
 from film_by_keyword import find_film_by_keyword
 from additional import get_query_type, ask_film_keyword
 from film_by_genre_year import (get_list_categories,
-                                     find_film_by_genre
-                                     , get_max_min_year
-                                     , find_film_by_genre_year
-                                     , choose_category )
+                                find_film_by_genre
+                                , get_max_min_year
+                                , find_film_by_genre_year
+                                , choose_category )
 from popular_search_query import get_popular_search_query
 # +++++++++++++++++++++++++++++++++++++++++++++++
 l = 65                              # Заполнитель для разделителя блоков вывода в консоли.
@@ -31,18 +31,20 @@ db_config_read = {
     'user': os.environ.get("user_read"),
     'password': os.environ.get("password_read"),
     'database': DB_read}
+
 try:
     # Подключение базы данных sakila:
     conn_read = mysql.connector.connect(**db_config_read)
 except ProgrammingError as err:
     if err.errno == 1049:
-        notice = f'\033[31m ERROR\033[m'
+        notice = f'   \033[40;31m ERROR \033[m'
         print(f'{'':><{l}}\n{notice:15}'
-              f' Database named \033[31m{DB_read}\033[m not found. Check the database name.'
+              f'   Database named \033[31m{DB_read}\033[m not found. Check the database name.'
               f'\n{'':><{l}}')
     else:
         print("Unexpected error: {}".format(err))
     exit()
+
 
 # Создание объекта курсора для выполнения SQL-запросов из sakila на чтение:
 cursor_read = conn_read.cursor()
@@ -87,18 +89,42 @@ cursor_write.execute(queries.get('query_create_table').format(table_for_saving))
 
 
 
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# ______ Поиск по ЖАНРУ и ГОДУ  _______________________________________
+
+# Функция ввода ГОДА с проверками на ошибки:
+def choose_year(cursor, category_name):
+    print(f'\n \033[32m▹\033[m Chose the year from next range:')
+    years_list = get_max_min_year(cursor)
+    while True:
+        try:
+            film_year = int(input(' Enter the YEAR from the range above: '))
+            # film_year = '1990'
+            if film_year not in years_list:
+                print(' Choose the YEAR from the range above.')
+            else:
+                find_film_by_genre_year(cursor, category_name, film_year)
+                write_count_query('', category_name, film_year)
+                break
+        except ValueError:
+            notice = f' \033[40;38m SORRY \033[m'
+            print(f'\n   {notice} Please use only NUMBERS for year. Try it again.')
+
+
 # --------------------------------------------------------------------- #
 #       2. Запись результата в БД со Счетчиком поисковых запросов       #
 # --------------------------------------------------------------------- #
 
 def write_count_query(film_keyword, category_name, film_year):
-    # Дата и время запроса:
-    date_time_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     # Отправка в БД group_111124_fp_Dvornyk_Olha:
     #       1) типа запроса,
     #       2) его результата,
     #       3) счетчика,
     #       4) даты и времени:
+
+    # Дата и время запроса:
+    date_time_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
     # Вызов функции поиска фильмов по КЛЮЧЕВОМУ СЛОВУ без вывода в консоль:
     if film_keyword != '' and category_name == '' and film_year == '':
         # Создание объекта курсора на ЗАПИСЬ в БД +++
@@ -110,21 +136,23 @@ def write_count_query(film_keyword, category_name, film_year):
         # print(get_query_type('kw'))
         data_query = (get_query_type('kw'), film_keyword, date_time_now)
         cursor_write.execute(queries.get('counter_query'), data_query)
+
     # Вызов функции поиска фильмов по ЖАНРУ без вывода в консоль:
     if film_keyword == '' and category_name != '' and film_year == '':
         # Присваиваю тип запроса:
         # print(get_query_type('g'))
         data_query = (get_query_type('g'), category_name, date_time_now)
         cursor_write.execute(queries.get('counter_query'), data_query)
-    # # Вызов функции поиска фильмов по ЖАНРУ и ГОДУ без вывода в консоль:
+
+    # Вызов функции поиска фильмов по ЖАНРУ и ГОДУ без вывода в консоль:
     if film_keyword == '' and category_name != '' and film_year != '':
     #     # Присваиваю тип запроса:
     #     # print(get_query_type('g_y'))
         data_query = (get_query_type('g_y'), f'{category_name}, {film_year}', date_time_now)
         cursor_write.execute(queries.get('counter_query'), data_query)
+
     conn_write.commit()
 
-# write_count_query()
 
 
 
@@ -146,7 +174,7 @@ def main_menu():
         print(f'\033[40;32m   ▹ 4  \033[m\033[0;38m{' Most POPULAR search query': <{l-4}}\033[m')
         print(f'\033[40;32m   ▹ 5  \033[m\033[0;38m{' EXIT': <{l-4}}\033[m')
 
-        ask = input(f' Enter the \033[40;32m{' NUMBER '}\033[m of the menu items: ')
+        ask = input(f'   Enter the \033[40;32m{' NUMBER '}\033[m of the menu items: ')
         # ask = '6'         # Так можно только для EXIT, потому что там есть break.
         if ask == '1':
             print(f'\n\033[40;32m {'':∵<{l}}\033[m'
@@ -154,6 +182,7 @@ def main_menu():
             film_keyword = ask_film_keyword()
             find_film_by_keyword(cursor_read, film_keyword)
             write_count_query(film_keyword, '', '')
+
         elif ask == '2':
             print(f'\n\033[40;32m{'':∵<{l}}\033[m'
                   f'\n\033[40;32m{'         Film GENRES ': <{l}}\033[m')
@@ -162,39 +191,31 @@ def main_menu():
             category_name = choose_category(cursor_read)
             find_film_by_genre(cursor_read, category_name)
             write_count_query('', category_name, '')
+
         elif ask == '3':
             print(f'\n\033[40;32m{'':∵<{l}}\033[m'
                   f'\n\033[40;32m{'         Film GENRES and YEARS': <{l}}\033[m')
             print(f'\n \033[32m▹\033[m To find for films, select the NUMBER of GENRE:')
             get_list_categories(cursor_read)
             category_name = choose_category(cursor_read)
-            print(f'\n ▹ Chose the year from next range:')
-            years_list = get_max_min_year(cursor_read)
-            while True:
-                try:
-                    film_year = int(input(' Enter the YEAR from the range above: '))
-                    # film_year = '1990'
-                    if film_year not in years_list:
-                        print('Choose the YEAR from the range above.')
-                    else:
-                        find_film_by_genre_year(cursor_read, category_name, film_year)
-                        write_count_query('', category_name, film_year)
-                        break
-                except ValueError:
-                    notice = f' \033[40;38m SORRY \033[m'
-                    print(f'\n{notice} You should use the NUMBERS for year. Try it again.')
+            choose_year(cursor_read, category_name)
+
         elif ask == '4':
             print(f'\n\033[40;32m{'':∵<{l}}\033[m'
                   f'\n\033[40;32m{'         Popular search queries': <{l}}\033[m')
             get_popular_search_query(cursor_write)
+
         elif ask == '5':
             print(f'\n\033[40;32m{' ▷▷▷▷▷▷  Exiting program  ':◁<{l}}\033[m')
             print(f'\033[40;38m{'        Thank you for using our service FILM SEARCH  ': <{l}}\033[m')
             break
+
         else:
-            print('Invalid ask, try again.')
+            print(' Please use NUMBERS only. Try it again.')
+
 
 main_menu()
+
 
 # Закрытие курсора и соединения с БД на ЗАПИСЬ и ЧТЕНИЕ:
 cursor_write.close()

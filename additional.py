@@ -4,14 +4,13 @@
 
 # ___ Типы ПОИСКОВЫХ ЗАПРОСОВ:
 #       - Film - по ключевому слову из названия фильма,
-#       - Genre - по жанру,
-#       - Year - по году.
+#       - Genre & Year - по жанру и по году,
+#       - pq - popular_search (queries).
+
 def get_query_type(key):
     query_type = {'kw': 'keyword', 'g_y': 'genre_year', 'g': 'genre', 'y': 'year',
                   'pq': 'popular_search'}
     return query_type.get(key)
-# print(get_query_type('kw'))
-
 
 
 # ___ Ключевое слово для поисковых запросов в таблице film БД sakila:
@@ -23,9 +22,4 @@ def ask_film_keyword():
         if keyword != '':
             return keyword
         else:
-            print('Please enter at least one symbol for the keyword.')
-
-# film_keyword = str(ask_film_keyword())
-
-
-
+            print(f' \033[40;38m SORRY \033[m Please enter at least one symbol for the keyword: ')
