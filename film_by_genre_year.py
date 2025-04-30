@@ -25,6 +25,9 @@ l = 60
 #                          data_in_col)
 
 def get_list_categories(cursor):
+    """
+    Функция вывода на экран нумерованного списка категорий из таблицы category в БД sakila.
+    """
     # Объект для выполнения операций с БД: отправки запросов и получения результатов:
     cursor.execute(queries.get('query_category_list'))
     category_list = cursor.fetchall()
@@ -39,6 +42,10 @@ def get_list_categories(cursor):
 # ______ Выбор ЖАНРА _______________________________________________
 
 def choose_category(cursor):
+    """
+    Функция выбора пользователем категории и проверки введенного им значения:
+    присутствует ли значение в таблице category БД sakila.
+    """
     cursor.execute(queries.get('query_category_list'))
     categories = cursor.fetchall()
     # Список номеров жанров (категорий):
@@ -65,6 +72,10 @@ def choose_category(cursor):
 
 
 def find_film_by_genre(cursor, category_name):
+    """
+    Функция поиска фильмов по ЖАНРУ в таблице film БД sakila с ограничением вывода в 10 строк
+    и возможностью для пользователя вывести следующие 10 и т.д.
+    """
     cursor.execute(queries.get('query_film_by_genre'), (category_name, 'title'))
     film_result = cursor.fetchall()
 
@@ -110,6 +121,10 @@ def find_film_by_genre(cursor, category_name):
 # ______ Список всех годов фильмов ____________________________________
 
 def get_max_min_year(cursor):
+    """
+    Функция печати минимального и максимального значений года выпуска фильмов,
+    представленных в таблице film БД sakila.
+    """
     # Объект для выполнения операций с БД: отправки запросов и получения результатов:
     cursor.execute(queries.get('query_film_by_year'))
     years = cursor.fetchall()
@@ -131,6 +146,10 @@ def get_max_min_year(cursor):
 # ______ Поиск по ЖАНРУ и ГОДУ  _______________________________________
 
 def find_film_by_genre_year(cursor, category_name, film_year):
+    """
+    Функция поиска фильмов по ЖАНРУ и ГОДУ в таблице film БД sakila с ограничением вывода в 10 строк
+    и возможностью для пользователя вывести следующие 10 и т.д.
+    """
     cursor.execute(queries.get('query_film_by_genre_year'), (category_name, film_year, 'release_year'))
     film_result = cursor.fetchall()
 

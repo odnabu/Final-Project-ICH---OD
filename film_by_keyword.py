@@ -20,6 +20,10 @@ from additional import get_query_type
 #                          data_in_col)
 
 def find_film_by_keyword(cursor, film_keyword):
+    """
+    Функция поиска фильмов по КЛЮЧЕВОМУ СЛОВУ в таблице film БД sakila с ограничением вывода в 10 строк
+    и возможностью для пользователя вывести следующие 10 и т.д.
+    """
     # Объект для выполнения операций с БД: отправки запросов и получения результатов:
     cursor.execute(queries.get('query_film_by_keyword'), (film_keyword,))
     film_result = cursor.fetchall()

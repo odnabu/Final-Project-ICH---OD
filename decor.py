@@ -11,6 +11,9 @@ from prettytable import PrettyTable
 # Данные для вывода --> data_in_col.
 
 def print_one_field_as_table(header_text, search_type, film_keyword, column_title, data_in_col):
+    """
+    Функция форматирования таблицы и печати содержимого.
+    """
     x = PrettyTable()
     x.title = f'🔜 {header_text} {search_type} \033[35m\"{film_keyword}\" \033[m'       # 🔜🗄️»»⁜※▤⊟⋙⋙
     x.header = True
@@ -27,7 +30,7 @@ def print_one_field_as_table(header_text, search_type, film_keyword, column_titl
 
 # Имена столбцов в выводе таблице:
 column_title = {
-    'column_title_film': ['N', 'Tile', 'Year', 'Duration'],     # , 'DESCRIPTION'
+    'column_title_film': ['N', 'Tile', 'Year', 'Duration'],
     'column_title_genre': ['N', 'Tile'],
     'column_title_year': ['from', 'to'],
     'column_title_popular': ['N', 'Type of search', 'Content of search']

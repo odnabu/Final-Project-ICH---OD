@@ -92,8 +92,11 @@ cursor_write.execute(queries.get('query_create_table').format(table_for_saving))
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # ______ Поиск по ЖАНРУ и ГОДУ  _______________________________________
 
-# Функция ввода ГОДА с проверками на ошибки:
+# ВФункция ввода пользователем года для поиска фильма по году:
 def choose_year(cursor, category_name):
+    """
+    Функция ввода ГОДА с проверками на ошибки.
+    """
     print(f'\n \033[32m▹\033[m Chose the year from next range:')
     years_list = get_max_min_year(cursor)
     while True:
@@ -111,45 +114,63 @@ def choose_year(cursor, category_name):
             print(f'\n   {notice} Please use only NUMBERS for year. Try it again.')
 
 
+
 # --------------------------------------------------------------------- #
 #       2. Запись результата в БД со Счетчиком поисковых запросов       #
 # --------------------------------------------------------------------- #
 
-def write_count_query(film_keyword, category_name, film_year):
-    # Отправка в БД group_111124_fp_Dvornyk_Olha:
-    #       1) типа запроса,
-    #       2) его результата,
-    #       3) счетчика,
-    #       4) даты и времени:
+# ______ 2.1. В функции для обращения к курсору "на запись" для записи в БД ich-edit содержания запроса,
+#       его даты и СЧЕТЧИКА запросов используются такие аргументы:
+#           - query_type - тип запроса, может быть 'kw' или другой из additional.py;
+#           - *args - film_keyword, category_name, film_year и date_time_now из которых:
+#               - category_name, может быть f'{category_name}, {film_year}'
+def call_cursor_write(query_type, *args):
+    """
+    Функция для обращения к курсору "на запись" для записи в БД ich-edit содержания запроса,
+    его даты и счетчика запросов.
+    """
+    # Формирование кортежа аргументов:
+    data_query = (get_query_type(query_type), *args)
+    # Получение запроса по ключу:
+    query = queries.get('counter_query')
+    # Проверяю, существует ли запрос:
+    if query:
+        # Создание объекта курсора на ЗАПИСЬ в БД:
+        cursor_write.execute(query, data_query)
+    else:
+        print(' ERROR: SQL-query not found.')
 
+
+
+# ______ 2.2. Функция записи в БД ich-edit содержания запроса и его даты:
+# Отправка в БД group_111124_fp_Dvornyk_Olha:
+#       1) типа запроса,
+#       2) его результата,
+#       3) счетчика,
+#       4) даты и времени:
+
+def write_count_query(film_keyword, category_name, film_year):
+    """
+    Функция записи в БД ich-edit содержания запроса, счетчика и его даты.
+    """
     # Дата и время запроса:
     date_time_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     # Вызов функции поиска фильмов по КЛЮЧЕВОМУ СЛОВУ без вывода в консоль:
     if film_keyword != '' and category_name == '' and film_year == '':
-        # Создание объекта курсора на ЗАПИСЬ в БД +++
         # Создание и Обновление счётчика запросов:
         #   search_type -    %s or {0} - get_query_type('kw'),
         #   search_content - %s or {1} - film_keyword,
         #   date_time -      %s or {2} - date_time_now
-        # Присваиваю тип запроса:
-        # print(get_query_type('kw'))
-        data_query = (get_query_type('kw'), film_keyword, date_time_now)
-        cursor_write.execute(queries.get('counter_query'), data_query)
+        call_cursor_write('kw', film_keyword, date_time_now)
 
     # Вызов функции поиска фильмов по ЖАНРУ без вывода в консоль:
     if film_keyword == '' and category_name != '' and film_year == '':
-        # Присваиваю тип запроса:
-        # print(get_query_type('g'))
-        data_query = (get_query_type('g'), category_name, date_time_now)
-        cursor_write.execute(queries.get('counter_query'), data_query)
+        call_cursor_write('g', category_name, date_time_now)
 
     # Вызов функции поиска фильмов по ЖАНРУ и ГОДУ без вывода в консоль:
     if film_keyword == '' and category_name != '' and film_year != '':
-    #     # Присваиваю тип запроса:
-    #     # print(get_query_type('g_y'))
-        data_query = (get_query_type('g_y'), f'{category_name}, {film_year}', date_time_now)
-        cursor_write.execute(queries.get('counter_query'), data_query)
+        call_cursor_write('g_y', f'{category_name}, {film_year}', date_time_now)
 
     conn_write.commit()
 
@@ -159,6 +180,9 @@ def write_count_query(film_keyword, category_name, film_year):
 # %%%%%%%%%______    MENU    ______%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 def main_menu():
+    """
+    Функция основного меню для взаимодействия с приложением.
+    """
     print(f'\033[40;32m{' ▷▷▷▷▷▷   Welcome to FILM SEARCH   ':◁<{l}}\033[0m')
     print(f'\033[40;38m{'    You can find here films by keywords, genre and year': <{l}}\033[m')
     print(f'\033[40;38m{'    Also see the most popular films in the search': <{l}}\033[m')
