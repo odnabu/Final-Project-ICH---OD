@@ -1,0 +1,9 @@
+2025-05-01 10:45:57,759 - INFO - FINAL_PROJECT_od - "" is Wrong NUMBER of chosen item.  Please use NUMBERS only. Try it again.
+2025-05-01 10:46:04,225 - INFO - FINAL_PROJECT_od - Searching by keyword: oce
+2025-05-01 10:46:04,342 - INFO - FINAL_PROJECT_od - Choosing the NUMBER 1 of item in main menu.
+2025-05-01 10:46:21,527 - ERROR - FINAL_PROJECT_od - 
+    [40;38m SORRY [m Please use only NUMBERS for year. Try it again.
+2025-05-01 10:46:26,051 - INFO - FINAL_PROJECT_od - Chosen year: 2025
+2025-05-01 10:46:26,052 - INFO - FINAL_PROJECT_od - Searching by keyword: Sci-Fi and film year: 2025
+2025-05-01 10:46:26,129 - INFO - FINAL_PROJECT_od - Choosing the NUMBER 3 of item in main menu.
+2025-05-01 10:46:28,162 - INFO - FINAL_PROJECT_od - Choosing the NUMBER 5 of item in main menu.

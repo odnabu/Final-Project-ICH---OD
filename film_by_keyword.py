@@ -30,7 +30,8 @@ def find_film_by_keyword(cursor, film_keyword):
 
     # Если фильмов НЕ найдено и вернулся ПУСТОЙ список:
     if not film_result:
-        print(f'   No films found that contain the keyword "\033[33m{film_keyword}\033[m" in the title.')
+        message = f'   No films found that contain the keyword "\033[33m{film_keyword}\033[m" in the title.'
+        print(message)
 
     else:
         # Извлечение данных из результата запроса:
@@ -43,7 +44,8 @@ def find_film_by_keyword(cursor, film_keyword):
         start = 0               # Начальный индекс
         end = chunk_size
 
-        print(f'\n   For the keyword "\033[33m{film_keyword}\033[m" was found \033[33m{len(film_result)}\033[m films: ')
+        message = f'\n   For the keyword "\033[33m{film_keyword}\033[m" was found \033[33m{len(film_result)}\033[m films: '
+        print(message)
         while start < len(film_result):
             # Вывожу текущий "пакет" данных, те первые 10 строк:
             print_one_field_as_table(header_text.get('header_text_film'),
